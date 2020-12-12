@@ -9,7 +9,9 @@ async function bootstrap() {
   const PORT = parseInt(process.env.SERVER_PORT) || 3000;
 
   app.useWebSocketAdapter(new RedisIoAdapter(app));
-  app.useStaticAssets(join(__dirname, '..', 'res'));
-  await app.listen(PORT);
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  await app.listen(PORT, () => {
+    console.log(`Server started on port: ${PORT}`);
+  });
 }
 bootstrap();

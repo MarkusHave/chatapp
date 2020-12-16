@@ -21,15 +21,18 @@ export class MessagesGateway
   // Init logger
   private logger: Logger = new Logger(MessagesGateway.name);
 
+  // MessagesGateway init
   public afterInit(): void {
-    return this.logger.log('Init');
+    return this.logger.log(`Init ${MessagesGateway.name}`);
   }
 
+  // User sends a message
   @SubscribeMessage('msgToServer')
   handleMessage(@MessageBody() data: MessageDTO): void {
     this.server.to(data.room).emit('msgToClient', data);
   }
 
+  // User joins a room
   @SubscribeMessage('joinRoom')
   public joinRoom(
     @ConnectedSocket() client: Socket,
@@ -39,6 +42,7 @@ export class MessagesGateway
     client.emit('joinedRoom', room);
   }
 
+  // User leaves a room
   @SubscribeMessage('leaveRoom')
   public leaveRoom(
     @ConnectedSocket() client: Socket,
@@ -48,10 +52,12 @@ export class MessagesGateway
     client.emit('leftRoom', room);
   }
 
+  // User disconnects
   public handleDisconnect(@ConnectedSocket() client: Socket): void {
     return this.logger.log(`Client: ${client.id} disconnected`);
   }
 
+  // User connects
   public handleConnection(@ConnectedSocket() client: Socket): void {
     return this.logger.log(`Client: ${client.id} connected`);
   }

@@ -1,66 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography } from '@material-ui/core';
-import Head from 'next/head';
-import useAxios from 'axios-hooks';
-import { AxiosRequestConfig } from 'axios';
+import { Box, Typography } from '@material-ui/core';
+import { GetStaticProps } from 'next';
+import axios from 'axios';
 
-type Room = {
-  id: number;
-  name: string;
-};
+import Room from '../src/interfaces/room';
+import Layout from '../src/components/Layout';
+import RoomListItem from '../src/components/RoomListItem';
 
-const Home = () => {
-  // Axios config
-  const axiosConf: AxiosRequestConfig = {
-    url: '/rooms',
-    method: 'get',
-    baseURL: `${process.env.NEST_HOST}:${process.env.NEST_PORT}`,
-  };
-
-  const [chatRooms, setChatRooms] = useState<Array<Room>>([]);
-  const [{ data, loading, error }, refetch] = useAxios<Array<Room>>(axiosConf);
-
-  useEffect(() => {
-    setChatRooms(data);
-  }, [data]);
-
-  if (!chatRooms) {
-    return (
-      <Container maxWidth='sm'>
-        <Head>
-          <title>Chat App</title>
-        </Head>
-        <Box>
-          <Typography variant='h4'>Chat App</Typography>
-          <Box>
-            <Typography variant='h5'>Available chat rooms:</Typography>
-            <Box>Loading...</Box>
-          </Box>
-        </Box>
-      </Container>
-    );
-  } else {
-    const rooms = chatRooms.map((room: Room) => {
-      return (
-        <Typography variant='h6' key={room.id}>
-          {room.name}
-        </Typography>
-      );
+export const getStaticProps: GetStaticProps = async () => {
+  // Get all chat rooms from backend
+  const chatRooms: Array<Room> = await axios
+    .get(`${process.env.NEST_HOST}/rooms`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+      throw err;
     });
 
+  return {
+    props: {
+      chatRooms,
+    },
+  };
+};
+
+const Home = ({ chatRooms }) => {
+  if (!chatRooms) {
     return (
-      <Container maxWidth='sm'>
-        <Head>
-          <title>Chat App</title>
-        </Head>
+      <Layout>
         <Box>
-          <Typography variant='h4'>Chat App</Typography>
+          <Typography variant='h5'>Available chat rooms:</Typography>
+          <Box>Loading...</Box>
+        </Box>
+      </Layout>
+    );
+  } else {
+    return (
+      <Layout>
+        <Box>
+          <Typography variant='h6'>Available chat rooms:</Typography>
           <Box>
-            <Typography variant='h6'>Available chat rooms:</Typography>
-            <Box>{rooms}</Box>
+            {chatRooms.map((room: Room) => {
+              return <RoomListItem key={room.id} room={room} />;
+            })}
           </Box>
         </Box>
-      </Container>
+      </Layout>
     );
   }
 };

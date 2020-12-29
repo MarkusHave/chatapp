@@ -1,5 +1,5 @@
 # Realtime chatapp
 
-Chatapp using Next.js, Nest.js, WebSockets and MongoDB
+Chatapp using Next.js, Nest.js, WebSockets, Redis and MongoDB
 
 ## WORK IN PROGRESS

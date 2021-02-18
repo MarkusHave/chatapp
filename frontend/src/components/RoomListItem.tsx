@@ -4,11 +4,7 @@ import Link from 'next/link';
 
 const RoomListItem = ({ room }) => (
   <Box key={room.id} style={{ backgroundColor: 'lightblue' }}>
-    <Link
-      href={{
-        pathname: '/chat',
-        query: { room: encodeURIComponent(room.id) },
-      }}>
+    <Link href={`/chat/${room.id}`}>
       <Typography variant='h6'>{room.name}</Typography>
     </Link>
   </Box>

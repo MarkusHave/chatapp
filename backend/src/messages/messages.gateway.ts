@@ -10,9 +10,10 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { MessageDTO } from './message.dto';
+import { MessageDTO } from './dto/message.dto';
+import { RoomDTO } from './dto/room.dto';
 
-@WebSocketGateway({ namespace: '/chat' })
+@WebSocketGateway({ namespace: 'chat' })
 export class MessagesGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   // Init WebSocket server
@@ -36,8 +37,9 @@ export class MessagesGateway
   @SubscribeMessage('joinRoom')
   public joinRoom(
     @ConnectedSocket() client: Socket,
-    @MessageBody() room: string,
+    @MessageBody() { room }: RoomDTO,
   ): void {
+    this.logger.log(`Client: ${client.id} joined room ${room}`);
     client.join(room);
     client.emit('joinedRoom', room);
   }
@@ -46,7 +48,7 @@ export class MessagesGateway
   @SubscribeMessage('leaveRoom')
   public leaveRoom(
     @ConnectedSocket() client: Socket,
-    @MessageBody() room: string,
+    @MessageBody() { room }: RoomDTO,
   ): void {
     client.leave(room);
     client.emit('leftRoom', room);

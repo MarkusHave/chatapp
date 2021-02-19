@@ -1,5 +1,6 @@
 export class MessageDTO {
+  readonly id: number;
   readonly name: string;
-  readonly text: string;
+  readonly message: string;
   readonly room: string;
 }

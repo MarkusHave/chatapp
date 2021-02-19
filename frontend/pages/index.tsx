@@ -3,9 +3,8 @@ import { Box, Typography } from '@material-ui/core';
 import { GetStaticProps } from 'next';
 import axios from 'axios';
 
-import Room from '../src/interfaces/room';
-import Layout from '../src/components/Layout';
-import RoomListItem from '../src/components/RoomListItem';
+import { Room } from '../src/interfaces';
+import { RoomsList } from '../src/components';
 
 export const getStaticProps: GetStaticProps = async () => {
   // Get all chat rooms from backend
@@ -26,29 +25,11 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-const Home = ({ chatRooms }) => {
+const Home = ({ chatRooms }: { chatRooms: Array<Room> }) => {
   if (!chatRooms) {
-    return (
-      <Layout>
-        <Box>
-          <Typography variant='h5'>Available chat rooms:</Typography>
-          <Box>Loading...</Box>
-        </Box>
-      </Layout>
-    );
+    return <Typography>Loading...</Typography>;
   } else {
-    return (
-      <Layout>
-        <Box>
-          <Typography variant='h6'>Available chat rooms:</Typography>
-          <Box>
-            {chatRooms.map((room: Room) => {
-              return <RoomListItem key={room.id} room={room} />;
-            })}
-          </Box>
-        </Box>
-      </Layout>
-    );
+    return <RoomsList chatRooms={chatRooms} />;
   }
 };
 

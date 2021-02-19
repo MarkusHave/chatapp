@@ -1,8 +1,10 @@
 import React from 'react';
-import { Box, Typography } from '@material-ui/core';
 import Link from 'next/link';
+import { Box, Typography } from '@material-ui/core';
 
-const RoomListItem = ({ room }) => (
+import { Room } from '../../interfaces';
+
+const RoomListItem = ({ room }: { room: Room }) => (
   <Box key={room.id} style={{ backgroundColor: 'lightblue' }}>
     <Link href={`/chat/${room.id}`}>
       <Typography variant='h6'>{room.name}</Typography>

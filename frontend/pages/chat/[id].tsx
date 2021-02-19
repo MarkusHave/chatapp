@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import io from 'socket.io-client';
@@ -12,8 +12,8 @@ import {
 } from '@material-ui/core/';
 
 import Room from '../../src/interfaces/room';
-import Layout from '../../src/components/Layout';
-import { join } from 'path';
+import Message from '../../src/interfaces/message';
+import { ChatView } from '../../src/components';
 
 const SERVER = process.env.NEST_HOST;
 
@@ -63,6 +63,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const socket = io(`${SERVER}/chat`);
 
 const Chat = ({ room }) => {
+  const [messages, setMessages] = useState<Array<Message> | undefined>();
+
   useEffect(() => {
     // Test if socket is connected and connect
     if (!socket.connected) {
@@ -86,24 +88,10 @@ const Chat = ({ room }) => {
   });
 
   if (!room) {
-    return (
-      <Layout>
-        <Typography variant='h5'>Loading...</Typography>
-      </Layout>
-    );
+    return <Typography variant='h5'>Loading...</Typography>;
   }
-  return (
-    <Layout>
-      <Box>
-        <Typography>{room.name}</Typography>
-        <Box>Chat Here</Box>
-        <TextField label='Message' />
-        <Button variant='contained' color='primary'>
-          Send
-        </Button>
-      </Box>
-    </Layout>
-  );
+
+  return <ChatView room={room} messages={messages} />;
 };
 
 export default Chat;

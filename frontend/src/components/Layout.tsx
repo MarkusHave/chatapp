@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { Container, Box, Typography } from '@material-ui/core';
 
-const Layout = (props) => (
+const Layout = (props: any) => (
   <Container maxWidth='sm'>
     <Head>
       <title>Chat App</title>

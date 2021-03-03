@@ -1,17 +1,18 @@
 import {
-  SubscribeMessage,
-  WebSocketGateway,
+  MessageBody,
   OnGatewayInit,
   WebSocketServer,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  MessageBody,
   ConnectedSocket,
+  WebSocketGateway,
+  SubscribeMessage,
+  OnGatewayDisconnect,
+  OnGatewayConnection,
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { MessageDTO } from './dto/message.dto';
 import { RoomDTO } from './dto/room.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @WebSocketGateway({ namespace: 'chat' })
 export class MessagesGateway
@@ -30,6 +31,7 @@ export class MessagesGateway
   // User sends a message
   @SubscribeMessage('msgToServer')
   handleMessage(@MessageBody() data: MessageDTO): void {
+    data.id = uuidv4();
     this.server.to(data.room).emit('msgToClient', data);
   }
 
@@ -64,3 +66,7 @@ export class MessagesGateway
     return this.logger.log(`Client: ${client.id} connected`);
   }
 }
+
+/**
+ * @todo Add broadcasting for new users
+ */

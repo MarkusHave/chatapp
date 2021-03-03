@@ -10,7 +10,7 @@ const MessagesList = ({ messages }: MessagesListProps) => {
   return (
     <>
       {messages.map((message) => {
-        <MessageItem message={message} />;
+        return <MessageItem key={message.id} message={message} />;
       })}
     </>
   );

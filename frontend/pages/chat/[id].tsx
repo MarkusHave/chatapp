@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
+import { GetStaticProps, GetStaticPaths } from 'next';
 import io from 'socket.io-client';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import {
   Box,
   Container,
@@ -59,11 +59,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
+interface ChatProps {
+  room: Room;
+}
+
 // Init global socket
 const socket = io(`${SERVER}/chat`);
 
-const Chat = ({ room }) => {
-  const [messages, setMessages] = useState<Array<Message> | undefined>();
+const Chat = ({ room }: ChatProps) => {
+  const [messages, setMessages] = useState<Array<Message>>([]);
+  const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
     // Test if socket is connected and connect
@@ -77,21 +82,46 @@ const Chat = ({ room }) => {
       console.log(`Joined room: ${room.id}_${room.name}`);
     });
 
+    socket.on('joinedRoom', () => {
+      const welcomeMsg: Message = {
+        id: new Date().toDateString(),
+        name: 'ChatBot',
+        body: `Welcome ${currentUser}`,
+        room: `${room.id}_${room.name}`,
+        createdAt: dayjs().format('HH:mm'),
+      };
+
+      setMessages([...messages, welcomeMsg]);
+    });
+
     return () => {
       console.log('Socket disconnected');
       socket.disconnect();
     };
   }, []);
 
-  socket.on('joinedRoom', () => {
-    console.log('Joined room');
+  socket.once('msgToClient', (msg: Message) => {
+    console.log(msg);
+    setMessages([...messages, msg]);
   });
+
+  const sendMessage = async (messageBody: string) => {
+    const message: Message = {
+      id: undefined,
+      name: 'makke',
+      body: messageBody,
+      room: `${room.id}_${room.name}`,
+      createdAt: dayjs().format('HH:mm'),
+    };
+
+    socket.emit('msgToServer', message);
+  };
 
   if (!room) {
     return <Typography variant='h5'>Loading...</Typography>;
   }
 
-  return <ChatView room={room} messages={messages} />;
+  return <ChatView room={room} messages={messages} sendMessage={sendMessage} />;
 };
 
 export default Chat;

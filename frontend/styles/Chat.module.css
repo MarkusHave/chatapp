@@ -1,0 +1,28 @@
+.chat {
+  background-color: bisque;
+  height: auto;
+  border: 1px solid black;
+}
+
+.messagesList {
+  margin: 1em;
+  padding: 0.2em;
+  height: 35em;
+  background-color: white;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.messageInput {
+  width: 25em;
+}
+
+.messageInputBox {
+  margin: 2em;
+}
+
+.messageBox {
+  margin: 1em;
+  /* padding: 10px;
+  border: 1px solid black; */
+}

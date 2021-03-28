@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
+import Link from 'next/link';
 import io from 'socket.io-client';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import {
-  Box,
-  Container,
-  Typography,
-  TextField,
-  Button,
-} from '@material-ui/core/';
+import { Button, Typography } from '@material-ui/core/';
 
 import Room from '../../src/interfaces/room';
 import Message from '../../src/interfaces/message';
@@ -68,9 +63,12 @@ const socket = io(`${SERVER}/chat`);
 
 const Chat = ({ room }: ChatProps) => {
   const [messages, setMessages] = useState<Array<Message>>([]);
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState<string>();
 
   useEffect(() => {
+    const user = localStorage.getItem('user');
+    setCurrentUser(user);
+
     // Test if socket is connected and connect
     if (!socket.connected) {
       socket.connect();
@@ -84,9 +82,9 @@ const Chat = ({ room }: ChatProps) => {
 
     socket.on('joinedRoom', () => {
       const welcomeMsg: Message = {
-        id: new Date().toDateString(),
+        id: Math.random().toString(),
         name: 'ChatBot',
-        body: `Welcome ${currentUser}`,
+        body: `Welcome ${user}`,
         room: `${room.id}_${room.name}`,
         createdAt: dayjs().format('HH:mm'),
       };
@@ -108,7 +106,7 @@ const Chat = ({ room }: ChatProps) => {
   const sendMessage = async (messageBody: string) => {
     const message: Message = {
       id: undefined,
-      name: 'makke',
+      name: currentUser,
       body: messageBody,
       room: `${room.id}_${room.name}`,
       createdAt: dayjs().format('HH:mm'),
@@ -116,6 +114,19 @@ const Chat = ({ room }: ChatProps) => {
 
     socket.emit('msgToServer', message);
   };
+
+  if (!currentUser) {
+    return (
+      <>
+        <Typography variant='h5'>Set username first</Typography>
+        <Link href={'/'}>
+          <Button variant='contained' color='primary'>
+            Go back
+          </Button>
+        </Link>
+      </>
+    );
+  }
 
   if (!room) {
     return <Typography variant='h5'>Loading...</Typography>;

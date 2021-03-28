@@ -32,6 +32,7 @@ export class MessagesGateway
   @SubscribeMessage('msgToServer')
   handleMessage(@MessageBody() data: MessageDTO): void {
     data.id = uuidv4();
+    this.logger.log(`New message: ${data.body} by user: ${data.name}`);
     this.server.to(data.room).emit('msgToClient', data);
   }
 
@@ -67,6 +68,4 @@ export class MessagesGateway
   }
 }
 
-/**
- * @todo Add broadcasting for new users
- */
+// TODO: implement mongo

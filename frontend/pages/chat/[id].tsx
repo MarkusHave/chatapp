@@ -10,7 +10,7 @@ import Room from '../../src/interfaces/room';
 import Message from '../../src/interfaces/message';
 import { ChatView } from '../../src/components';
 
-const SERVER = process.env.NEST_HOST;
+const SERVER = process.env.BACKEND_HOST;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const rooms: Array<Room> = await axios

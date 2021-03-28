@@ -1,5 +1,5 @@
 module.exports = {
   env: {
-    NEST_HOST: process.env.NEST_HOST,
+    BACKEND_HOST: process.env.BACKEND_HOST,
   },
 };

@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { Room } from '../src/interfaces';
 import { RoomsList } from '../src/components';
-import { UserContext } from '../src/userContext';
+import { UserContext } from '../src/UserContext';
 
 export const getStaticProps: GetStaticProps = async () => {
   // Get all chat rooms from backend

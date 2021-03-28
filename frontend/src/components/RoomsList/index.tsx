@@ -3,7 +3,7 @@ import { Box, Button, TextField, Typography } from '@material-ui/core';
 
 import { Room } from '../../interfaces';
 import RoomListItem from './RoomListItem';
-import { UserContext } from '../../userContext';
+import { UserContext } from '../../UserContext';
 
 const RoomsList = ({ chatRooms }: { chatRooms: Array<Room> }) => {
   const [username, setUsername] = useState<string>('');

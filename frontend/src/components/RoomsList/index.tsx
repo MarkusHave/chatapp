@@ -7,7 +7,7 @@ import { UserContext } from '../../UserContext';
 
 const RoomsList = ({ chatRooms }: { chatRooms: Array<Room> }) => {
   const [username, setUsername] = useState<string>('');
-  const { setUser, user } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
   const handleNameChange = async () => {
     setUser(username);
